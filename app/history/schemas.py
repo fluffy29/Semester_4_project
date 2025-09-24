@@ -7,7 +7,7 @@ class ConversationMeta(BaseModel):
     id: str
     title: str
     createdAt: datetime
-    lastMessageAt: datetime
+    updatedAt: datetime
 
 
 class ConversationDetail(BaseModel):

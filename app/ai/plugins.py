@@ -8,6 +8,7 @@ class PluginManager:
     def __init__(self) -> None:
         self._before: List[BeforeHook] = []
         self._after: List[AfterHook] = []
+        return None
 
     def register_before(self, fn: BeforeHook) -> None:
         self._before.append(fn)

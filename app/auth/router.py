@@ -18,4 +18,4 @@ async def login(
     if not user or not user_service.verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token(user.id, user.role, settings)
-    return TokenResponse(access_token=token)
+    return TokenResponse(access_token=token, role=user.role)

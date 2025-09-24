@@ -10,6 +10,9 @@ from .ai.base import AIClient
 from .ai.openai_client import OpenAIClient
 from .ai.gpt4all_client import GPT4AllClient
 from .ai.fallback_client import FallbackAIClient
+from .ai.mock_client import MockAIClient
+from .ai.gemini_client import GeminiClient
+import os
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 http_bearer = HTTPBearer(auto_error=False)
@@ -23,17 +26,37 @@ def get_user_service() -> UserService:
 
 def get_ai_client(settings: Settings = Depends(get_settings)) -> AIClient:
     provider = settings.ai_provider.lower()
+    if provider == "mock":
+        return MockAIClient()
     if provider == "openai":
+        # If no API key or a placeholder key (contains '...'), use mock directly.
+        key = settings.openai_api_key or os.getenv("OPENAI_API_KEY") or ""
+        if (not key) or ("..." in key):
+            return MockAIClient()
         primary = OpenAIClient(settings)
+        # Build a fallback chain: OpenAI -> (optional GPT4All) -> Mock
+        client: AIClient = primary
+        # Try GPT4All
         try:
-            fallback = GPT4AllClient(settings)
+            gpt4all_client = GPT4AllClient(settings)
+            client = FallbackAIClient(client, gpt4all_client)
         except Exception:
-            fallback = None
-        if fallback:
-            return FallbackAIClient(primary, fallback)
-        return primary
+            pass
+        # Always add Mock as final safety net so chatting works offline / on API errors
+        client = FallbackAIClient(client, MockAIClient())
+        return client
     if provider == "gpt4all":
         return GPT4AllClient(settings)
+    if provider == "gemini":
+        key = settings.gemini_api_key or os.getenv("GEMINI_API_KEY") or ""
+        if (not key) or ("..." in key):
+            return MockAIClient()
+        try:
+            primary: AIClient = GeminiClient(settings)
+        except Exception:
+            return MockAIClient()
+        # Add Mock fallback always for resilience
+        return FallbackAIClient(primary, MockAIClient())
     raise HTTPException(status_code=500, detail="Unknown AI_PROVIDER")
 
 

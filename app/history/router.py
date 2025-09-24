@@ -19,7 +19,7 @@ async def list_history(page: int = 1, pageSize: int = 20, settings: Settings = D
     hs = get_history_service(settings)
     items = hs.list_user_conversations(user.id, page, pageSize)
     result = [
-        ConversationMeta(id=c.id, title=c.title, createdAt=c.created_at, lastMessageAt=c.updated_at) for c in items
+        ConversationMeta(id=c.id, title=c.title, createdAt=c.created_at, updatedAt=c.updated_at) for c in items
     ]
     return result
 
@@ -54,5 +54,5 @@ async def admin_list_conversations(settings: Settings = Depends(get_settings), u
     hs = get_history_service(settings)
     items = hs.list_all_conversations()
     return [
-        ConversationMeta(id=c.id, title=c.title, createdAt=c.created_at, lastMessageAt=c.updated_at) for c in items
+        ConversationMeta(id=c.id, title=c.title, createdAt=c.created_at, updatedAt=c.updated_at) for c in items
     ]

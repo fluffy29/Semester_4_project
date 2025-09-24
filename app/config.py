@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(None, alias="OPENAI_API_KEY")
     openai_model: str = Field("gpt-4o-mini", alias="OPENAI_MODEL")
     gpt4all_model_path: str = Field("./models/q4_0-orca-mini-3b.gguf", alias="GPT4ALL_MODEL_PATH")
+    gemini_api_key: str | None = Field(None, alias="GEMINI_API_KEY")
+    gemini_model: str = Field("gemini-1.5-flash", alias="GEMINI_MODEL")
     max_tokens: int = Field(512, alias="MAX_TOKENS")
     temperature: float = Field(0.4, alias="TEMPERATURE")
     privacy_store_messages: bool = Field(False, alias="PRIVACY_STORE_MESSAGES")
@@ -35,6 +37,8 @@ def get_settings() -> Settings:
         OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"),
         OPENAI_MODEL=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
         GPT4ALL_MODEL_PATH=os.getenv("GPT4ALL_MODEL_PATH", "./models/q4_0-orca-mini-3b.gguf"),
+    GEMINI_API_KEY=os.getenv("GEMINI_API_KEY"),
+    GEMINI_MODEL=os.getenv("GEMINI_MODEL", "gemini-1.5-flash"),
         MAX_TOKENS=int(os.getenv("MAX_TOKENS", "512")),
         TEMPERATURE=float(os.getenv("TEMPERATURE", "0.4")),
     PRIVACY_STORE_MESSAGES=os.getenv("PRIVACY_STORE_MESSAGES", "false").lower() in {"1", "true", "yes", "on"},
