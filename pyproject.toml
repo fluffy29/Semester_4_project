@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genai-chat-backend"
+version = "0.1.0"
+description = "FastAPI backend for Generative AIs & Chatbots project"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]",
+  "pydantic>=2",
+  "pydantic-settings>=2.2",
+  "httpx>=0.24",
+  "python-dotenv",
+  "passlib[bcrypt]",
+  "pyjwt",
+]
+
+[project.optional-dependencies]
+local = ["gpt4all"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["app"]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+addopts = "-q"

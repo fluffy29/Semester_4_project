@@ -1,0 +1,2 @@
+STUDENT = "student"
+ADMIN = "admin"
