@@ -44,3 +44,10 @@ class ChatService:
             del self._conversations[conversation_id]
             return True
         return False
+
+    def rename_conversation(self, conversation_id: str, user_id: str, title: str) -> bool:
+        conv = self._conversations.get(conversation_id)
+        if not conv or conv.user_id != user_id:
+            return False
+        conv.title = title.strip() or conv.title
+        return True

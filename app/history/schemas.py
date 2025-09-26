@@ -19,3 +19,10 @@ class ConversationDetail(BaseModel):
 
 class DeleteResponse(BaseModel):
     deleted: bool
+
+
+class RenameRequest(BaseModel):
+    title: str
+
+class RenameResponse(BaseModel):
+    renamed: bool

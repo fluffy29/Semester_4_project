@@ -21,3 +21,6 @@ class HistoryService:
 
     def delete_conversation(self, conversation_id: str, user_id: str) -> bool:
         return self.chat_service.delete_conversation(conversation_id, user_id)
+
+    def rename_conversation(self, conversation_id: str, user_id: str, title: str) -> bool:
+        return self.chat_service.rename_conversation(conversation_id, user_id, title)

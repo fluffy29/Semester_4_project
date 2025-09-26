@@ -4,7 +4,7 @@ from ..config import Settings
 from ..auth.service import User
 from ..chat.router import get_chat_service
 from .service import HistoryService
-from .schemas import ConversationMeta, ConversationDetail, DeleteResponse
+from .schemas import ConversationMeta, ConversationDetail, DeleteResponse, RenameRequest, RenameResponse
 
 router = APIRouter(prefix="/history", tags=["history"])
 
@@ -44,6 +44,12 @@ async def delete_history_item(conversationId: str, settings: Settings = Depends(
     hs = get_history_service(settings)
     deleted = hs.delete_conversation(conversationId, user.id)
     return DeleteResponse(deleted=deleted)
+
+@router.patch("/{conversationId}", response_model=RenameResponse)
+async def rename_history_item(conversationId: str, payload: RenameRequest, settings: Settings = Depends(get_settings), user: User = Depends(require_role("student"))):
+    hs = get_history_service(settings)
+    ok = hs.rename_conversation(conversationId, user.id, payload.title)
+    return RenameResponse(renamed=ok)
 
 
 admin_router = APIRouter(prefix="/admin", tags=["admin"])
